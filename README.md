@@ -1,6 +1,6 @@
 # @lukecjohnson/args
 
-A quick, lightweight command-line argument parser with type checking, 
+A fast command-line argument parser with type checking, 
 shorthand flags, default values, and help text generation
 
 
@@ -17,7 +17,7 @@ npm install @lukecjohnson/args
 
 ### Options
 
-`parse` accepts an `options` object that can be used to define flags and 
+`parseArgs` accepts an `options` object that can be used to define flags and 
 customize its behavior. The following options are available:
 
 - `flags`: An object defining the flags the program or command accepts. Each 
@@ -43,7 +43,7 @@ customize its behavior. The following options are available:
 
 ### Result
 
-`parse` returns an object containing `args` and `flags`:
+`parseArgs` returns an object containing `args` and `flags`:
 
 - `args`: An array of non-flag arguments provided by the end-user
 - `flags`: An object containing the values of flags provided by the end-user or 
@@ -53,13 +53,12 @@ customize its behavior. The following options are available:
 ### Example
 
 ```js
-import parse from '@lukecjohnson/args';
+import parseArgs from '@lukecjohnson/args';
 
-const { args, flags } = parse({
+const { args, flags } = parseArgs({
   flags: {
     host: {
       type: 'string',
-      shorthand: 'H',
       description: 'Hostname to bind',
       default: 'localhost',
     },
@@ -102,10 +101,9 @@ Usage:
   node serve.js [directory] [flags]
 
 Flags:
-  -H, --host            Hostname to bind (Default: "localhost")
+  --host                Hostname to bind (Default: "localhost")
   -p, --port            Port to bind (Default: 3000)
   -d, --debug           Show debugging information (Default: false)
-
 ```
 
 
