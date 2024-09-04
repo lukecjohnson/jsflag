@@ -1,11 +1,18 @@
 {
   "name": "@lukecjohnson/args",
   "version": "1.0.1",
-  "description": "A quick, lightweight command-line argument parser with type checking, shorthand flags, default values, and help text generation",
+  "description": "A fast command-line argument parser with type checking, shorthand flags, default values, and help text generation",
   "repository": "lukecjohnson/args",
   "license": "MIT",
   "type": "module",
-  "exports": "./index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/pkg/index.d.ts"
+    }
+  },
   "files": [
     "index.js",
     "index.d.ts"

@@ -1,4 +1,4 @@
-export default function parse({
+export default function parseArgs({
   argv = process.argv.slice(2),
   flags = {},
   disableHelp = false,
@@ -6,7 +6,7 @@ export default function parse({
   usage
 } = {}) {
   const result = { args: [], flags: {} };
-  const shorthandMap = {};
+  const shorthands = {};
 
   for (const key in flags) {
     const flag = flags[key];
@@ -31,7 +31,7 @@ export default function parse({
       if (flag.shorthand.length !== 1) {
         throw new Error(`shorthand for "${key}" flag must be 1 character`);
       }
-      shorthandMap[flag.shorthand] = key;
+      shorthands[flag.shorthand] = key;
     }
 
     if (flag.default !== undefined) {
@@ -46,7 +46,7 @@ export default function parse({
 
   if (!disableHelp) {
     flags.help = { type: 'boolean' };
-    shorthandMap.h = 'help';
+    shorthands.h = 'help';
   }
 
   for (let i = 0; i < argv.length; i++) {
@@ -61,36 +61,36 @@ export default function parse({
       continue;
     }
 
-    let nameStartIndex = 1;
+    let nameOffset = 1;
 
     if (arg[1] === '-') {
       if (arg.length === 2) {
         result.args.push(...argv.slice(i + 1));
         break;
       }
-      nameStartIndex = 2;
+      nameOffset = 2;
     }
 
+    const valueOffset = arg.indexOf('=');
     let name, value;
-    const valueStartIndex = arg.indexOf('=');
 
-    if (valueStartIndex > -1) {
-      name = arg.substring(nameStartIndex, valueStartIndex);
-      value = arg.substring(valueStartIndex + 1);
+    if (valueOffset > -1) {
+      name = arg.substring(nameOffset, valueOffset);
+      value = arg.substring(valueOffset + 1);
     } else {
-      name = arg.substring(nameStartIndex);
+      name = arg.substring(nameOffset);
     }
 
-    if (nameStartIndex === 1) {
+    if (nameOffset === 1) {
       if (name.length === 1) {
-        if (!shorthandMap[name]) {
+        if (!shorthands[name]) {
           throw new Error(`unknown flag: -${name}`);
         }
-        name = shorthandMap[name];
+        name = shorthands[name];
       } else {
         for (let j = 1; j < arg.length; j++) {
           const shorthand = arg[j];
-          const mappedFlagName = shorthandMap[shorthand];
+          const mappedFlagName = shorthands[shorthand];
 
           if (!mappedFlagName) {
             throw new Error(`unknown flag: -${shorthand}`);
@@ -108,11 +108,12 @@ export default function parse({
       }
     }
 
-    if (!flags[name]) {
+    const flag = flags[name];
+    if (!flag) {
       throw new Error(`unknown flag: --${name}`);
     }
 
-    if (flags[name].type === 'boolean') {
+    if (flag.type === 'boolean') {
       if (!value) {
         result.flags[name] = true;
         continue;
@@ -128,20 +129,17 @@ export default function parse({
 
     if (!value) {
       value = argv[i + 1];
-
-      if (!value || (value[0] === '-' && flags[name].type !== 'number')) {
+      if (!value || (value[0] === '-' && flag.type !== 'number')) {
         throw new Error(
-          (nameStartIndex === 1 ? `-${flags[name].shorthand}` : `--${name}`) +
-            ` requires a value of type \`${flags[name].type}\``
+          (nameOffset === 1 ? `-${flag.shorthand}` : `--${name}`) +
+            ` requires a value of type \`${flag.type}\``
         );
       }
-
       i++;
     }
 
-    if (flags[name].type === 'number') {
+    if (flag.type === 'number') {
       value = +value;
-
       if (isNaN(value)) {
         throw new Error(`--${name} requires a value of type \`number\``);
       }
