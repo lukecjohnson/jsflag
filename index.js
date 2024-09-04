@@ -160,17 +160,17 @@ export default function parseArgs({
     for (const key in flags) {
       const flag = flags[key];
 
-      if (!flag.description) {
-        continue;
-      }
-
       output += '  ';
 
       if (flag.shorthand) {
         output += `-${flag.shorthand}, `;
       }
 
-      output += `--${key}\t\t${flag.description}`;
+      output += `--${key}`;
+
+      if (flag.description) {
+        output += `\t\t${flag.description}`;
+      }
 
       if (flag.default !== undefined) {
         output += ` (Default: ${
