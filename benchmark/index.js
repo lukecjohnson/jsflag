@@ -4,7 +4,7 @@ import commandLineArgs from 'command-line-args';
 import minimist from 'minimist';
 import mri from 'mri';
 import yargs from 'yargs-parser';
-import parse from '../index.js';
+import parseArgs from '../index.js';
 
 const argv = ['public', '--host=0.0.0.0', '--port', '8080', '-d'];
 
@@ -15,7 +15,6 @@ new benchmark.Suite()
         '--host': String,
         '--port': Number,
         '--debug': Boolean,
-        '-H': '--host',
         '-d': '--debug',
         '-p': '--port'
       },
@@ -25,7 +24,7 @@ new benchmark.Suite()
   .add('command-line-args', () => {
     commandLineArgs(
       [
-        { name: 'host', alias: 'H', type: String },
+        { name: 'host', type: String },
         { name: 'port', alias: 'p', type: Number },
         { name: 'debug', alias: 'd', type: Boolean }
       ],
@@ -33,21 +32,20 @@ new benchmark.Suite()
     );
   })
   .add('minimist', () => {
-    minimist(argv, { alias: { H: 'host', d: 'debug', p: 'port' } });
+    minimist(argv, { alias: { d: 'debug', p: 'port' } });
   })
   .add('mri', () => {
-    mri(argv, { alias: { H: 'host', d: 'debug', p: 'port' } });
+    mri(argv, { alias: { d: 'debug', p: 'port' } });
   })
   .add('yargs-parser', () => {
-    yargs(argv, { alias: { H: 'host', d: 'debug', p: 'port' } });
+    yargs(argv, { alias: { d: 'debug', p: 'port' } });
   })
   .add('@lukecjohnson/args', () => {
-    parse({
+    parseArgs({
       argv,
       flags: {
         host: {
-          type: 'string',
-          shorthand: 'H'
+          type: 'string'
         },
         port: {
           type: 'number',

@@ -110,12 +110,12 @@ Flags:
 ## Benchmarks
 
 ```
-@lukecjohnson/args    2,227,270 ops/sec ±0.70% (94 runs sampled)
-arg                   1,067,095 ops/sec ±1.24% (92 runs sampled)
-mri                     520,460 ops/sec ±0.39% (95 runs sampled)
-minimist                216,378 ops/sec ±0.39% (97 runs sampled)
-command-line-args        61,050 ops/sec ±0.85% (93 runs sampled)
-yargs-parser             24,684 ops/sec ±2.47% (93 runs sampled)
+@lukecjohnson/args  4,693,263 ops/sec ±0.31% (98 runs sampled)
+arg                 2,484,276 ops/sec ±0.38% (98 runs sampled)
+mri                 1,547,159 ops/sec ±0.35% (99 runs sampled)
+minimist            629,555 ops/sec ±0.31% (99 runs sampled)
+command-line-args   158,831 ops/sec ±0.34% (97 runs sampled)
+yargs-parser        73,104 ops/sec ±0.34% (96 runs sampled)
 ```
 
 See [`/benchmark`](benchmark) for benchmark details
